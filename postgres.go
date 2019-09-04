@@ -42,6 +42,13 @@ func NewPostgesGeneratorFromConfig(dbConf *PostgresConfig) (SequenceGenerator, e
 // If length == 0 -> return original sequence from database
 // Else return padded string with 0
 func (gen *PostgresGenerator) Generate(seqKey string, prefix string, length int) (string, error) {
+	return gen.GenerateWithStartAt(seqKey, prefix, length, 0)
+}
+
+// Generate generate new sequence by postgres
+// If length == 0 -> return original sequence from database
+// Else return padded string with 0
+func (gen *PostgresGenerator) GenerateWithStartAt(seqKey, prefix string, length, startAt int) (string, error) {
 	seq, err := gen.getSequenceFromKey(seqKey)
 	if err != nil && !gen.isSequenceNotExistError(err) {
 		return "", err
@@ -54,7 +61,8 @@ func (gen *PostgresGenerator) Generate(seqKey string, prefix string, length int)
 			return "", err
 		}
 	}
-	strSeq := strconv.FormatInt(int64(seq), 10)
+
+	strSeq := strconv.FormatInt(int64(seq + startAt), 10)
 
 	if length == 0 {
 		return fmt.Sprintf("%s%s", prefix, strSeq), nil
