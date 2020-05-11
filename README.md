@@ -17,7 +17,7 @@ package main
 import (
 	"net/http"
 
-	"bitbucket.org/snapmartinc/sequence_template"
+	"github.com/best-expendables/sequence_template"
 )
 
 func main() {
