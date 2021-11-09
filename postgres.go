@@ -49,14 +49,14 @@ func (gen *PostgresGenerator) Generate(seqKey string, prefix string, length int)
 // If length == 0 -> return original sequence from database
 // Else return padded string with 0
 func (gen *PostgresGenerator) GenerateWithStartAt(seqKey, prefix string, length, startAt int) (string, error) {
-	seq, err := gen.GetSequenceFromKey(seqKey)
+	seq, err := gen.getSequenceFromKey(seqKey)
 	if err != nil && !gen.isSequenceNotExistError(err) {
 		return "", err
 	} else if err != nil && gen.isSequenceNotExistError(err) {
 		if err = gen.createSequence(seqKey); err != nil {
 			return "", err
 		}
-		seq, err = gen.GetSequenceFromKey(seqKey)
+		seq, err = gen.getSequenceFromKey(seqKey)
 		if err != nil {
 			return "", err
 		}
@@ -71,11 +71,22 @@ func (gen *PostgresGenerator) GenerateWithStartAt(seqKey, prefix string, length,
 	return fmt.Sprintf("%s%s", prefix, lefpad(strSeq, "0", length)), nil
 }
 
+func (gen *PostgresGenerator) GetCurrentSequenceFromKey(seqKey string) (int, error) {
+	var seq int
+	row := gen.db.Raw(fmt.Sprintf("SELECT currval('%s')", seqKey)).Row()
+	err := row.Scan(&seq)
+	if err != nil {
+		return 0, err
+	}
+
+	return seq, nil
+}
+
 func lefpad(str, padStr string, length int) string {
 	return fmt.Sprintf("%s%s", strings.Repeat(padStr, length-len(str)), str)
 }
 
-func (gen *PostgresGenerator) GetSequenceFromKey(seqKey string) (int, error) {
+func (gen *PostgresGenerator) getSequenceFromKey(seqKey string) (int, error) {
 	var seq int
 	row := gen.db.Raw(fmt.Sprintf("SELECT nextval('%s')", seqKey)).Row()
 	err := row.Scan(&seq)

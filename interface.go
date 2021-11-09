@@ -5,5 +5,5 @@ package sequencetemplate
 type SequenceGenerator interface {
 	GenerateWithStartAt(seqKey string, prefix string, length, startAt int) (string, error)
 	Generate(seqKey string, prefix string, length int) (string, error)
-    GetSequenceFromKey(seqKey string) (int, error)
+    GetCurrentSequenceFromKey(seqKey string) (int, error)
 }
