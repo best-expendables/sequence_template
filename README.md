@@ -1,12 +1,5 @@
 # Sequence Generator GO library
 
-### Install
-```yaml
-import:
-- package: bitbucket.lzd.co/lgo/sequence_template
-  version: x.x.x
-```
-
 ### Examples
 
 ##### 1) Postgress genenerator
