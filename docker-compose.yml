@@ -1,0 +1,11 @@
+version: '2'
+
+services:
+    appdb:
+        image: postgres:11.13
+        environment:
+            POSTGRES_PASSWORD: app_pass
+            POSTGRES_USER: app_user
+            POSTGRES_DB: app_db
+        ports:
+            - 5432:5432
