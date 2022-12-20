@@ -74,7 +74,7 @@ func (gen *PostgresGenerator) GenerateWithStartAt(seqKey, prefix string, length,
 
 func (gen *PostgresGenerator) GetCurrentSequenceFromKey(seqKey string) (int, error) {
 	var seq int
-	row := gen.db.Raw(fmt.Sprintf("SELECT last_value FROM %s", seqKey)).Row()
+	row := gen.db.Raw(fmt.Sprintf(`SELECT last_value FROM "%s"`, seqKey)).Row()
 	err := row.Scan(&seq)
 	if err != nil {
 		return 0, err
