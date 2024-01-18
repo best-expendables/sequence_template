@@ -131,8 +131,10 @@ func (gen *PostgresGenerator) isSequenceNotExistError(err error) bool {
 }
 
 func (gen *PostgresGenerator) createGaplessSequenceTable() error {
-	if err := gen.db.AutoMigrate(&GaplessSequence{}); err != nil {
-		return err
+	if !gen.db.Migrator().HasTable(&GaplessSequence{}) {
+		if err := gen.db.AutoMigrate(&GaplessSequence{}); err != nil {
+			return err
+		}
 	}
 	return nil
 }
